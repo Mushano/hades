@@ -1,2 +1,2 @@
 user,grade,occupation,exp
-武者小路,5,新手,26
+武者小路,7,新手,28.0

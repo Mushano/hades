@@ -22,7 +22,7 @@ class DialogueController:
         command = input('请输入指令：')
         return command
 
-    def count_dowm(self, second = 1500):
+    def count_dowm(self, second = 1480):
         """
         倒计时
         :return:
