@@ -11,6 +11,7 @@ from ranker import Ranker
 from engagement import Engagement
 from reward import Reward
 from record import Record
+from analysis import Analysis
 import random
 import time
 
@@ -88,6 +89,13 @@ while(command != 'exit'):
             f'当前祝福：{rew.pre_blessing}\n'
             f'理财池：{rew.financial_pool}\n'
         )
+
+    if command == 'a':
+        x = input('\n' + '请输入分析代码：')
+        a = Analysis(x)
+        a.start_plot()
+        print("分析成功\n")
+
     if command == 'e':
         event = input('\n' + '请输入今天发生的事件：')
         rec.event = event
