@@ -37,3 +37,8 @@ class DialogueController:
         aim = input('\n'+'请输入你的遭遇战目标：')
         return aim
 
+    def level_up(self,level,reward):
+        print(f'--------------------恭喜你成功升级到{level}级\n'
+              f'--------------------本次你获得的升级奖励是<{reward}>\n'
+              f'--------------------赶紧毕业啊！把家人接过来武汉！\n')
+

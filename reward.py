@@ -6,7 +6,7 @@
 @文档说明:负责遭遇战完成后的奖励或者惩罚
 """
 import random
-
+import numpy as np
 
 class Reward:
     """
@@ -109,6 +109,7 @@ class Reward:
             self.blessing_dic[bl[ran]] += 1
             self.frequency += 1
         self.frequency -= 1
+
     def get_pre_bless(self):
         """
         获取当前的祝福
@@ -123,3 +124,21 @@ class Reward:
             else:
                 # 存储当前祝福
                 self.pre_blessing.append({k:v})
+
+    def get_level_bless(self):
+        """
+        升级奖励
+        :return:
+        """
+        np.random.seed(0)
+        r = {'饭后散步':20
+             ,'食堂大亨':30
+             ,'小资生活':10
+             ,'来集小新':30
+             ,'豪华下午茶':20
+             ,'购物津贴':20
+             ,'开发续命':40}
+
+        res = np.random.choice(list(r.keys()), p=np.array(list(r.values())) / np.array(list(r.values())).sum().ravel())
+        return res
+

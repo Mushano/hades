@@ -24,6 +24,8 @@ class Ranker:
         if self.exp >= self.exp_limit:
             self.exp = self.exp - self.exp_limit
             self.grade += 1
+            return 1
+        return 0
 
     def get_occupation(self):
         if self.grade // 10 == 0:

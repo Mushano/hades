@@ -232,8 +232,8 @@ class Analysis:
         list1 = []
         list2 = []
         for i in range(len(df)):
-            list1.append(dict(zip(['value','percent'],[df.iloc[i,1],df.iloc[i,4]])))
-            list2.append(dict(zip(['value', 'percent'], [df.iloc[i, 2], round(1.0-df.iloc[i, 4],2)])))
+            list1.append(dict(zip(['value','percent'],[df.loc[i,'time'],df.loc[i,'p']])))
+            list2.append(dict(zip(['value', 'percent'], [df.loc[i, 'my_time'], round(1.0-df.loc[i, 'p'],2)])))
 
         bar = (
             Bar(init_opts=opts.InitOpts())
@@ -286,7 +286,3 @@ class Analysis:
                 )
         )
         bar.overlap(line).render(f"{self.x}_analysis.html")
-
-
-a = Analysis('day')
-a.start_plot()

@@ -63,12 +63,15 @@ while(command != 'exit'):
                     rew.blessing_later(ran)
                     n = n - 1
                 print(f'--------------------你被幸运点数是{ran+1}，{list(rew.blessing_dic.keys())[ran]}降临到你身上')
-            ranker.add_exp(rew.final_exp)
+            is_level_up = ranker.add_exp(rew.final_exp)
             print(
                 f'--------------------你的理财池共有{rew.financial_pool}点经验值\n'
                 f'--------------------本次战斗你得到了{rew.final_exp}点经验\n'
+                f'--------------------你现在等级为{df_user.grade[0]}级\n'
                 f'--------------------距离升级还差{ranker.exp_limit - ranker.exp}点经验\n'
             )
+            if is_level_up ==1:
+                dia.level_up(ranker.grade,rew.get_level_bless())
 
         if yn == 'n':
             # 调用惩罚机制
