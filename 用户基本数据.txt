@@ -1,2 +1,2 @@
-user,grade,occupation,exp
-武者小路,22,枪战士,29.30000000000001
+user,grade,occupation,exp,money
+武者小路,13,科研助手,26.11000000000002,666.3100000000006

@@ -169,8 +169,9 @@ class Analysis:
             # 摸鱼时间计算
             df['my_time'] = df['all_time'] - df['time']
             df['complete_p'] = df['iscomplete']/df['task']
-            wm = lambda x: np.average(x, weights=df.loc[x.index, 'task'])
-            df = df.groupby('interval')[['time','my_time','all_time','complete_p']].agg(wm).reset_index()
+            if self.x == 'day':
+                wm = lambda x: np.average(x, weights=df.loc[x.index, 'task'])
+                df = df.groupby('interval')[['time','my_time','all_time','complete_p']].agg(wm).reset_index()
             df['p'] = df['time']/df['all_time']
             df =df.round(2)
 
@@ -232,8 +233,8 @@ class Analysis:
         list1 = []
         list2 = []
         for i in range(len(df)):
-            list1.append(dict(zip(['value','percent'],[df.loc[i,'time'],df.loc[i,'p']])))
-            list2.append(dict(zip(['value', 'percent'], [df.loc[i, 'my_time'], round(1.0-df.loc[i, 'p'],2)])))
+            list1.append(dict(zip(['value','percent'],[df.iloc[i]['time'],df.iloc[i]['p']])))
+            list2.append(dict(zip(['value', 'percent'], [df.iloc[i]['my_time'], round(1.0-df.iloc[i]['p'],2)])))
 
         bar = (
             Bar(init_opts=opts.InitOpts())

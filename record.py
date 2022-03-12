@@ -7,6 +7,7 @@
 @Copyright：©武汉大学测绘遥感信息工程国家重点实验室UBDR小组
 """
 import time
+from datetime import datetime
 import pandas as pd
 import math
 from datetime import datetime
@@ -15,10 +16,16 @@ class Record:
     """
     @ClassName：Record
     @Description：
+    用来记录签到数据
     用来记录天的数据
     @Author：wuzhexiaolu
     """
     def __init__(self):
+        # 签到和签退时间
+        self.sign_in_time = 0
+        self.sign_out_time = 0
+
+        # 记录天的总结数据
         self.df_task = 0
         self.user = 0
         self.date = 0
@@ -54,6 +61,12 @@ class Record:
         self.work_time = str(timedelta)[-8:]
         self.time_p = round(pd.to_timedelta(1800 * len(df_date) * pow(10,9)) / timedelta, 3)
 
+    def sign_in(self):
+        self.sign_in_time = datetime.now()
+
+    def sign_out(self):
+        self.sign_out_time = datetime.now()
+        return 1
 
     def to_df(self, df_day):
         df_day.loc[len(df_day)] = [self.user, self.date, self.stime, self.etime

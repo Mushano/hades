@@ -7,6 +7,7 @@
 """
 import random
 import numpy as np
+import pandas as pd
 
 class Reward:
     """
@@ -15,8 +16,17 @@ class Reward:
     @Author：wuzhexiaolu
     """
 
-    def __init__(self, ori_exp):
-        self.ori_exp = ori_exp
+    def __init__(self, ori_exp, ori_money, sign_in_time, grade, is_sign_in):
+        # 计算衰减和增加系数
+        self.c = round(pow(1.1,grade - 1),2)
+        if is_sign_in == 2:
+            self.f = 1
+        else:
+            self.f = self.get_f(sign_in_time)
+
+        # 计算经验值
+        self.ori_exp = round(ori_exp * self.f,2)
+        self.ori_money = round(ori_money * self.c * self.f,2)
         self.final_exp = 0
         self.financial_pool = 0
         self.pre_blessing = []
@@ -29,6 +39,44 @@ class Reward:
         # 奖励次数
         self.frequency = 0
 
+
+
+    def get_f(self,t):
+        """
+        经验值和金钱的衰减系数
+        :return:
+        """
+        t_hms = pd.Timestamp(t.strftime('%H:%M:%S'))
+        limit1 = pd.Timestamp('08:30:00')
+        # 时段的签到开始时间和签到结束时间
+        limit2_1 = pd.Timestamp('12:30:00')
+        limit2_2 = pd.Timestamp('14:00:00')
+        limit3_1 = pd.Timestamp('18:00:00')
+        limit3_2 = pd.Timestamp('19:00:00')
+        if (t_hms < limit2_1) & (t_hms > limit1):
+            # 早上时段
+            d = (t_hms - limit1)/pd.Timedelta('01:00:00')
+            normal = np.random.normal(loc =0.0 , scale= 0.1,size = 1)[0]
+            return  np.round(np.exp(-(d+normal)),2)
+
+        elif (t_hms < limit3_1) & (t_hms > limit2_2):
+            # 下午时段
+            d = (t_hms - limit2_2) / pd.Timedelta('01:00:00')
+            normal = np.random.normal(loc=0.0, scale=0.1, size=1)[0]
+            return  np.round(np.exp(-(d + normal)), 2)
+
+        elif  (t_hms > limit3_2):
+
+            # 晚上时段
+            d = (t_hms - limit3_2) / pd.Timedelta('01:00:00')
+            normal = np.random.normal(loc=0.0, scale=0.1, size=1)[0]
+            return np.round(np.exp(-(d + normal)), 2)
+        else:
+            return 1
+
+
+
+
     def get_final_exp(self,inc):
         """
         得到遭遇战计算最后的经验值
@@ -37,16 +85,18 @@ class Reward:
             # 根据祝福列表依次计算
             # 存在1及以上的则代入祝福
             v = self.blessing_dic[k]
+            extra_exp = 0
             if v == 0:
                 continue
             else:
                 inc = inc * self.get_bless_inc(k, inc)
                 self.blessing_dic[k] -=1
-                if self.blessing_dic['理财祝福'] == 0:
-                    self.final_exp += self.financial_pool
-                    self.financial_pool == 0
-        pool_exp = self.financial_pool // 5
-        self.final_exp = inc * self.ori_exp + pool_exp
+                # if self.blessing_dic['理财祝福'] == 0:
+                #     extra_exp = self.financial_pool
+                #     self.financial_pool = 0
+                #     print('执行理财结算')
+        pool_exp = (self.financial_pool // 5)+extra_exp
+        self.final_exp = round(inc * self.ori_exp + pool_exp,2)
         self.financial_pool = self.financial_pool - pool_exp
         return inc
 
@@ -61,17 +111,17 @@ class Reward:
         elif k == '时间祝福':
             inc = 1.3
         elif k == '移除祝福':
-            self.financial_pool += self.ori_exp*(inc-1)
+            self.financial_pool += round(self.ori_exp*(inc-1),2)
             inc = 1
         elif k == '翻倍祝福':
             inc = 2
         elif k == '理财祝福':
             if self.blessing_dic[k] == 5:
-                self.financial_pool += inc*1.5*self.ori_exp
+                self.financial_pool += round(inc*1.5*self.ori_exp,2)
             inc = 1
         elif k == '双重祝福':
             if self.financial_pool <= 25:
-                self.financial_pool = self.financial_pool * 2
+                self.financial_pool = round(self.financial_pool * 2,2)
             inc = 1
         return inc
 
