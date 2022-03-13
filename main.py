@@ -33,7 +33,7 @@ ranker = Ranker(df_user.loc[0, 'grade'], df_user.loc[0, 'exp'],df_user.loc[0, 'm
 rew = Reward(10,10,rec.sign_in_time,df_user.loc[0, 'grade'],is_sign_in)
 # 开场对话
 # 昨日评分情况
-dia.day_score(saver.df_day)
+dia.day_score(saver.df_day.copy())
 
 
 
@@ -123,7 +123,7 @@ while((is_sign_in != 0) & (is_sign_out == 0)):
         print('\n---------成功签退！\n')
         saver.to_sign_csv(rec)
         t = datetime.datetime.now()
-        if t > pd.Timestamp('18:00:00'):
+        if t > pd.Timestamp('19:00:00'):
             rec.compute_time('任务清单.txt')
             saver.df_day = rec.to_df(saver.df_day)
             saver.to_day_csv()
